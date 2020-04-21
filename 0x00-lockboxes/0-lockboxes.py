@@ -5,9 +5,9 @@
 def canUnlockAll(boxes):
     opened = set()
     not_open = set((0,))
-    while len(to_open) > 0:
-        k = to_open.pop()
+    while len(not_open) > 0:
+        k = not_open.pop()
         if k < len(boxes):
-            opened.update((key,))
+            opened.update((k,))
             not_open.update(set(boxes[k]).difference(opened))
     return len(opened) == len(boxes)
