@@ -20,13 +20,10 @@ typedef struct binary_tree_s
 	struct binary_tree_s *right;
 } binary_tree_t;
 
-typedef struct binary_tree_s binary_tree_t;
 typedef struct binary_tree_s heap_t;
-
 void binary_tree_print(const binary_tree_t *);
 binary_tree_t *binary_tree_node(binary_tree_t *parent, int value);
 heap_t *heap_insert(heap_t **root, int value);
-heap_t *make_heap(heap_t *new_node, int value);
-heap_t *whereis_node(heap_t *head, heap_t *new_node, int value);
+
 
 #endif /* _BINARY_TREES_H_ */
