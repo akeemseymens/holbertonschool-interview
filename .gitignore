@@ -5,3 +5,5 @@
 0x01-insert_in_sorted_linked_list/.vscode/settings.json
 0x00-lockboxes/main_0.py
 0x01-insert_in_sorted_linked_list/insert
+0x02-heap_insert/0-main.c
+0x02-heap_insert/1-main.c

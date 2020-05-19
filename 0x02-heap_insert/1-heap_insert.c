@@ -1,96 +1,100 @@
-#include <stdlib.h>
 #include "binary_trees.h"
-/**
- * make_heap - makes into max heap, needs some work :(
- * @new_node: the new node to evaluate
- * @value: the value of the new node
- * Return: a pointer to the node that contains the original value
- */
-heap_t *make_heap(heap_t *new_node, int value)
-{
-	int temp = new_node->parent->n;
 
-	if (value > new_node->parent->n)
+/**
+ * heap_size - measures the size of a binary tree
+ * @tree: input binary tree
+ * Return: number of descendant child nodes
+ */
+size_t heap_size(const binary_tree_t *tree)
+{
+	if (!tree)
+		return (0);
+	return (1 + heap_size(tree->left) + heap_size(tree->right));
+}
+
+/**
+ * convert - converts number and base into string
+ * @num: input number
+ * @base: input base
+ * @lowercase: flag if hexa values need to be lowercase
+ * Return: result string
+ */
+char *convert(unsigned long int num, int base, int lowercase)
+{
+	static char *rep;
+	static char buffer[50];
+	char *ptr;
+
+	rep = (lowercase)
+		? "0123456789abcdef"
+		: "0123456789ABCDEF";
+	ptr = &buffer[49];
+	*ptr = 0;
+	do {
+		*--ptr = rep[num % base];
+		num /= base;
+	} while (num);
+	return (ptr);
+}
+
+/**
+ * insert - helper func to insert node to correct location
+ * @root: double pointer to root of max heap
+ * @node: node to insert
+ */
+void _insert(heap_t **root, heap_t *node)
+{
+	char c, *binary;
+	unsigned int i, size;
+	heap_t *tmp = NULL;
+
+	tmp = *root;
+	size = heap_size(tmp) + 1;
+	binary = convert(size, 2, 1);
+	for (i = 1; i < strlen(binary); i++)
 	{
-		new_node->parent->n = value;
-		new_node->n = temp;
-		return (new_node->parent);
-	}
-	else
-	{
-		new_node->n = value;
-		return (new_node);
+		c = binary[i];
+		if (i == strlen(binary) - 1)
+		{
+			if (c == '1')
+				tmp->right = node;
+			else if (c == '0')
+				tmp->left = node;
+			node->parent = tmp;
+		}
+		else if (c == '1')
+			tmp = tmp->right;
+		else if (c == '0')
+			tmp = tmp->left;
 	}
 }
-/**
- * possition_node - positions the node in the heap
- * @head: the head of the nodes we are working with, not always the root
- * @new_node: the new node to insert into the heap
- * @value: the value of the new node
- * Return: same as above
- */
-heap_t *possition_node(heap_t *head, heap_t *new_node, int value)
-{
-	heap_t *new_head;
-	heap_t *node_pointer;
 
-	new_head = head;
-	node_pointer = make_heap(new_node, value);
-	if (new_head->left == NULL)
-	{
-		new_head->left = new_node;
-		new_node->parent = new_head;
-		new_node->left = NULL;
-		new_node->right = NULL;
-		return (node_pointer);
-	}
-	else if (new_head->right == NULL)
-	{
-		new_head->right = new_node;
-		new_node->parent = new_head;
-		new_node->left = NULL;
-		new_node->right = NULL;
-		return (node_pointer);
-	}
-	else
-	{
-		if (new_head->parent)
-			new_head = new_head->parent->left;
-		if (!new_head->left->right)
-			return (possition_node(new_head->left, new_node, value));
-		else
-			return (possition_node(new_head->right, new_node, value));
-	}
-	return (node_pointer);
-}
 /**
- * heap_insert - inserts a node into a heap
- * @root: the root of the entire heap
- * @value: the value to insert
- * Return: the node that contains the new value
+ * heap_insert - inserts a value into a max binary heap
+ * @root: double pointer to root of tree
+ * @value: input value
+ * Return: pointer to the created node, or NULL on failure
  */
 heap_t *heap_insert(heap_t **root, int value)
 {
-	heap_t *new_node;
-	heap_t *head;
+	heap_t *new_node = NULL;
+	int tmp;
 
-	/* left_or_right: 0 for left 1 for right */
-	head = *root;
-
-	/* Step 0: make a new node if no memory avaliable return NULL */
-	new_node = binary_tree_node(head, value);
-
-	/* Step 1: position the new node */
-	if (head == NULL)
+	if (!root)
+		return (NULL);
+	new_node = binary_tree_node(NULL, value);
+	if (!*root)
 	{
 		*root = new_node;
-		head = new_node;
-		new_node->n = value;
-		new_node->parent = NULL;
-		new_node->left = NULL;
-		new_node->right = NULL;
 		return (new_node);
 	}
-	else
-		return (possition_node(head, new_node, value));
+	_insert(root, new_node);
+	while (new_node->parent && new_node->n > new_node->parent->n)
+	{
+		tmp = new_node->parent->n;
+		new_node->parent->n = new_node->n;
+		new_node->n = tmp;
+		new_node = new_node->parent;
+	}
+	return (new_node);
 }
