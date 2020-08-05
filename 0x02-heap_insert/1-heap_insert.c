@@ -1,100 +1,71 @@
 #include "binary_trees.h"
 
 /**
- * heap_size - measures the size of a binary tree
- * @tree: input binary tree
- * Return: number of descendant child nodes
+ * insert - find the correct location to insert new node
+ * @root: pointer to the root node
+ *
+ * Return: pointer to the insertion spot
  */
-size_t heap_size(const binary_tree_t *tree)
+heap_t *insert(heap_t *root)
 {
-	if (!tree)
-		return (0);
-	return (1 + heap_size(tree->left) + heap_size(tree->right));
-}
+	heap_t *queue[50];
+	heap_t *insert = root;
+	int start = 0, end = 0;
 
-/**
- * convert - converts number and base into string
- * @num: input number
- * @base: input base
- * @lowercase: flag if hexa values need to be lowercase
- * Return: result string
- */
-char *convert(unsigned long int num, int base, int lowercase)
-{
-	static char *rep;
-	static char buffer[50];
-	char *ptr;
-
-	rep = (lowercase)
-		? "0123456789abcdef"
-		: "0123456789ABCDEF";
-	ptr = &buffer[49];
-	*ptr = 0;
-	do {
-		*--ptr = rep[num % base];
-		num /= base;
-	} while (num);
-	return (ptr);
-}
-
-/**
- * insert - helper func to insert node to correct location
- * @root: double pointer to root of max heap
- * @node: node to insert
- */
-void _insert(heap_t **root, heap_t *node)
-{
-	char c, *binary;
-	unsigned int i, size;
-	heap_t *tmp = NULL;
-
-	tmp = *root;
-	size = heap_size(tmp) + 1;
-	binary = convert(size, 2, 1);
-	for (i = 1; i < strlen(binary); i++)
+	while (insert && insert->left && insert->right)
 	{
-		c = binary[i];
-		if (i == strlen(binary) - 1)
-		{
-			if (c == '1')
-				tmp->right = node;
-			else if (c == '0')
-				tmp->left = node;
-			node->parent = tmp;
-		}
-		else if (c == '1')
-			tmp = tmp->right;
-		else if (c == '0')
-			tmp = tmp->left;
+		queue[start] = insert->left;
+		start += 1;
+		if (start >= 49)
+			start = 0;
+		queue[start] = insert->right;
+		start += 1;
+		if (start >= 49)
+			start = 0;
+		insert = queue[end];
+		end += 1;
+		if (end >= 49)
+			end = 0;
 	}
+
+	return (insert);
 }
 
 /**
- * heap_insert - inserts a value into a max binary heap
- * @root: double pointer to root of tree
- * @value: input value
- * Return: pointer to the created node, or NULL on failure
+ * heap_insert - insert a value into a max binary heap
+ * @root: double pointer to the root node
+ * @value: value to insert
+ * Return: pointer to the inserted node or NULL if it fails
  */
 heap_t *heap_insert(heap_t **root, int value)
 {
-	heap_t *new_node = NULL;
+	heap_t *new, *push;
 	int tmp;
 
 	if (!root)
 		return (NULL);
-	new_node = binary_tree_node(NULL, value);
+
 	if (!*root)
 	{
-		*root = new_node;
-		return (new_node);
+		new = binary_tree_node(*root, value);
+		*root = new;
+		return (new);
 	}
-	_insert(root, new_node);
-	while (new_node->parent && new_node->n > new_node->parent->n)
+
+	push = insert(*root);
+	new = binary_tree_node(push, value);
+	if (push->left == NULL)
+		push->left = new;
+	else
+		push->right = new;
+
+	while (new->parent && new->n > new->parent->n)
 	{
-		tmp = new_node->parent->n;
-		new_node->parent->n = new_node->n;
-		new_node->n = tmp;
-		new_node = new_node->parent;
+		tmp = new->parent->n;
+		new->parent->n = new->n;
+		new->n = tmp;
+		new = new->parent;
 	}
-	return (new_node);
+
+	return (new);
 }
