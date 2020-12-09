@@ -1,4 +1,4 @@
-#!/usr/bin python3
+#!/usr/bin/python3
 """ Find out if the room has all the keys for the room returns a boolean."""
 
 
@@ -11,4 +11,4 @@ def canUnlockAll(boxes):
     if key < len(boxes):
       visited.update((key,))
       queue.update(set(boxes[key]).difference(visited))
-    return len(visited) == len(boxes)
+  return len(visited) == len(boxes)
