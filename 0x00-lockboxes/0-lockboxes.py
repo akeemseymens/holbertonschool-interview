@@ -1,4 +1,4 @@
-#!/usr/bin python3
+#!/usr/bin/python3
 """Find out if the room has all the keys for the room return a boolean."""
 
 
