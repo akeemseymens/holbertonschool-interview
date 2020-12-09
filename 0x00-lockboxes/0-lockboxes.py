@@ -4,8 +4,9 @@
 
 def canUnlockAll(boxes):
   """check if user and unlock all boxes"""
+  
   queue = [0]
-  visited = { 0 }
+  visited = {0}
   while queue:
     rm = queue.pop() #visited room
     for key in boxes[rm]:
