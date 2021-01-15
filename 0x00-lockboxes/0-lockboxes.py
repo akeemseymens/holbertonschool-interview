@@ -1,13 +1,13 @@
 #!/usr/bin/python3
-"""Checks the boxes to see if they have a key."""
+'''Find out if the room has all the keys for the room returns a boolean.'''
 
 
 def canUnlockAll(boxes):
-    opened = set()
-    not_open = set((0,))
-    while len(not_open) > 0:
-        k = not_open.pop()
-        if k < len(boxes):
-            opened.update((k,))
-            not_open.update(set(boxes[k]).difference(opened))
-    return len(opened) == len(boxes)
+    visited = set()
+    queue = set((0,))
+    while len(queue) > 0:
+        key = queue.pop()
+        if key < len(boxes):
+            visited.update((key,))
+            queue.update(set(boxes[key]).difference(visited))
+    return len(visited) == len(boxes)
