@@ -27,11 +27,11 @@ static void print_grid(int grid[3][3])
  */
 void add_piles(int grid1[3][3], int grid2[3][3])
 {
-	int row, col;
+	int i, j;
 
-	for (row = 0; row < 3; row++)
-		for (col = 0; col < 3; col++)
-			grid1[row][col] += grid2[row][col];
+	for (i = 0; i < 3; i++)
+		for (j = 0; j < 3; j++)
+			grid1[i][j] += grid2[i][j];
 }
 
 /**
@@ -59,7 +59,7 @@ int is_stable(int grid[3][3])
 void topple(int grid[3][3])
 {
 	int i, j;
-	int temp-grid[3][3] = {
+	int increment[3][3] = {
 		{0, 0, 0},
 		{0, 0, 0},
 		{0, 0, 0}
@@ -73,18 +73,18 @@ void topple(int grid[3][3])
 			{
 				grid[i][j] -= 4;
 				if (i > 0)
-					temp-grid[i - 1][j]++;
+					increment[i - 1][j]++;
 				if (i < 2)
-					temp-grid[i + 1][j]++;
+					increment[i + 1][j]++;
 				if (j > 0)
-					temp-grid[i][j - 1]++;
+					increment[i][j - 1]++;
 				if (j < 2)
-					temp-grid[i][j + 1]++;
+					increment[i][j + 1]++;
 			}
 		}
 	}
 
-	add_piles(grid, temp-grid);
+	add_piles(grid, increment);
 }
 
 /**
