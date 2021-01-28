@@ -14,6 +14,7 @@ def print_status(size, status):
         if value:
             print('{}: {}'.format(key, value))
 
+
 def main():
     '''
     main function of the parser.
