@@ -1,12 +1,15 @@
 #!/usr/bin/python3
 """
-UTF8 function checking
+Valid UTF8 function checking
 """
 
 
 def validUTF8(data):
     """
-    check if array of UTF-8 is valid
+    validUTF8 - Determine if a data set represents a valid UTF-8 encoding
+    @data: The data set to 
+    
+    Return: True if valid UTF-8, False otherwise
     """
     bytes_behind = 0
     for byte in data:
@@ -25,5 +28,4 @@ def validUTF8(data):
                 bytes_behind = 1
             else:
                 return False
-
     return bytes_behind == 0
