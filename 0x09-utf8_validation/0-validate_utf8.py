@@ -1,32 +1,31 @@
 #!/usr/bin/python3
-'''
-Write a method that determines if a given data set represents
-a valid UTF-8 encoding
-'''
+"""
+Valid UTF8 function checking
+"""
 
 
 def validUTF8(data):
-    '''
+    """
     validUTF8 - Determine if a data set represents a valid UTF-8 encoding
-    @data: The data set to evaluate
+    @data: The data set to 
+    
     Return: True if valid UTF-8, False otherwise
-    '''
-    n_bytes = 0
-    mask1 = 1 << 7
-    mask2 = 1 << 6
-
-    for num in data:
-        mask = 1 << 7
-        if n_bytes == 0:
-            while mask & num:
-                n_bytes += 1
-                mask = mask >> 1
-            if n_bytes == 0:
-                continue
-            if n_bytes == 1 or n_bytes > 4:
+    """
+    bytes_behind = 0
+    for byte in data:
+        if bytes_behind:
+            if byte >> 6 != 0b10:
                 return False
+            bytes_behind -= 1
         else:
-            if not (num & mask1 and not (num & mask2)):
+            if byte >> 7 == 0:
+                continue
+            elif byte >> 3 == 0b11110:
+                bytes_behind = 3
+            elif byte >> 4 == 0b1110:
+                bytes_behind = 2
+            elif byte >> 5 == 0b110:
+                bytes_behind = 1
+            else:
                 return False
-        n_bytes -= 1
-    return n_bytes == 0
+    return bytes_behind == 0
