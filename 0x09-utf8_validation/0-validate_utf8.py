@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 '''
 Write a method that determines if a given data set represents
