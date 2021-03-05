@@ -1,5 +1,6 @@
-#include "0-menger.h"
+#include "menger.h"
 #include <math.h>
+
 #include <stdio.h>
 
 /**
