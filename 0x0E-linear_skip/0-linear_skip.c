@@ -1,41 +1,46 @@
 #include "search.h"
 
 /**
- * linear_skip - search a skiplist for a value
- * @list: list to search
- * @value: value to search for
- * Return: node with value or NULL
+ * linear_skip - Search for a value in a sorted skip list of integers
+ * @list: Pointer to the head of the skip list
+ * @value: The value to search for
+ *
+ * Return: Pointer to the first node where value is located
  */
 skiplist_t *linear_skip(skiplist_t *list, int value)
 {
-	skiplist_t *p = list;
+	skiplist_t *end;
 
 	if (!list)
 		return (NULL);
 
-	while ((p = p->express))
+	while (list && list->express)
 	{
-		printf("Value checked at index [%li] = [%i]\n",
-		       p->index, p->n);
-		if (p->n >= value)
+		printf("Value checked at index [%d] = [%d]\n",
+		       (int) list->express->index, list->express->n);
+		if (value > list->express->n)
+			list = list->express;
+		else
 			break;
-		list = p;
-
-		if (!p->express)
-		{
-			while (p->next)
-				p = p->next;
-			break;
-		}
 	}
-	printf("Value found between indexes [%li] and [%li]\n",
-	       list->index, p->index);
-	while (list != p->express)
+
+	end = list;
+	if (list->express)
+		end = end->express;
+	else
+		while (end->next)
+			end = end->next;
+	printf("Value found between indexes [%d] and [%d]\n",
+		    (int) list->index, (int) end->index);
+
+	while (list->index <= end->index)
 	{
-		printf("Value checked at index [%li] = [%i]\n",
-		       list->index, list->n);
-		if (list->n == value)
+		printf("Value checked at index [%d] = [%d]\n",
+		       (int) list->index, list->n);
+		if (value == list->n)
 			return (list);
+		if (!list->next)
+			break;
 		list = list->next;
 	}
 	return (NULL);
